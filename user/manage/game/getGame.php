@@ -1,0 +1,38 @@
+
+<?php
+    header('Content-Type:application/json');
+
+    $servername = "localhost:3306";
+    $username = "root";
+    $password = "123456";
+    $dbname = "user";
+
+    // 创建连接
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    
+    // 检测连接
+    if ($conn->connect_error) {
+        die("连接失败: " . $conn->connect_error);
+    }
+
+    $sql = "SELECT * FROM contest ORDER BY end_time desc";
+    $result = mysqli_query($conn, $sql);
+
+    $now = date("Y-m-d H:i:s");
+    $noEnd = "";
+    $ended = "";
+
+    while($row = mysqli_fetch_assoc($result)) {
+        $timeLimit = $row["time_limit"] == null ? "无" : ($row["time_limit"] . "分钟");
+        if (strtotime($now) < strtotime($row["end_time"])) {
+            $noEnd .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a><a href="#" onclick="deleteGame(this)">删除</a></td></tr>';
+        } else {
+            $ended .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a><a href="#" onclick="deleteGame(this)">删除</a></td></tr>';
+        }
+    }
+
+    $res = [$noEnd, $ended];
+    echo json_encode($res, JSON_UNESCAPED_UNICODE);
+    
+    $conn->close();
+?>

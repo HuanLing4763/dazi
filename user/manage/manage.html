@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>个人中心</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #66ccff;
+        }
+
+        .show {
+            display: flex;
+            justify-content: center;
+        }
+
+        .box {
+            background-color: white;
+            margin-top: 50px;
+            width: 1000px;
+            height: 600px;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .menu::after {
+            content: "";
+            background: linear-gradient(to right, #959494, #959494);
+            width: 90%;
+            height: 1px;
+            z-index: 1;
+        }
+
+        .page {
+            height: 20px;
+            margin-bottom: -2px;
+            padding: 10px;
+            z-index: 2;
+            cursor: pointer;
+        }
+
+        .checked {
+            border-bottom: 3px solid #66ccff;
+            font-weight: bold;
+            color: #66ccff;
+        }
+
+        table {
+            margin: 20px 100px;
+            width: 800px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        tr th,
+        td {
+            border: 1px solid black;
+        }
+
+        .exit {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .exit input {
+            width: 300px;
+            height: 50px;
+            background-color: #ee0000;
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .table {
+            overflow-x: hidden;
+            overflow-y: scroll;
+            max-height: 400px;
+        }
+
+        .table::-webkit-scrollbar {
+            display: none;
+        }
+
+        .up {
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        .game-inside {
+            margin-bottom: 20px;
+        }
+
+        #create {
+            margin-left: 45%;
+            width: 100px;
+            height: 50px;
+            margin-top: 20px;
+        }
+
+        #upload {
+            margin: 20px 5%;
+            flex-direction: column;
+        }
+
+        #upload textarea {
+            width: 95%;
+            height: 400px;
+        }
+
+        #game {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin: 20px 5%;
+        }
+    </style>
+    <script src="../../jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script>
+        window.onload = function () {
+            getUser();
+            $.ajax({
+                url: "getFile.php",
+                success(res) {
+                    $("#acticleList").html(res);
+                }
+            })
+        }
+
+        function getUser() {
+            $.ajax({
+                url: "getUser.php",
+                success(res) {
+                    $("#info").html(res);
+                }
+            })
+        }
+
+        function getData() {
+            $.ajax({
+                url: "getData.php",
+                success(res) {
+                    $("#info").html(res);
+                }
+            })
+        }
+
+        function exportFile() {
+            alert("请选中需要的数据复制到Excel工作表中");
+        }
+
+        function upload() {
+            var title = $("#title").val();
+            var content = $("#content").val();
+            $.ajax({
+                url: "upload.php",
+                type: "GET",
+                data: {
+                    title: title,
+                    content: content
+                },
+                success(res) {
+                    alert("提交成功！");
+                }
+            })
+        }
+
+        function creatUser(username) {
+            var username = prompt("请输入用户名");
+            if (username == null) return;
+            if (username == "") {
+                alert("用户名不能为空！");
+                return
+            }
+            $.ajax({
+                url: "createUser.php",
+                type: "POST",
+                data: {
+                    account: username
+                },
+                success(res) {
+                    if (res == 1) {
+                        alert("用户已存在！");
+                        return
+                    }
+                    getUser();
+                    alert("创建用户成功！\n初始密码为123456");
+                }
+            })
+        }
+
+        function deleteUser(user) {
+            if (confirm("是否删除该用户")) {
+                var name = $($(user).parent().find("td")[1]).html();
+                if (name == "root") {
+                    alert("root用户不可删除！");
+                    return
+                }
+                $.ajax({
+                    url: "deleteUser.php",
+                    type: "GET",
+                    data: {
+                        name: name
+                    },
+                    success(res) {
+                        getUser();
+                        alert("删除成功！");
+                    }
+                })
+            }
+        }
+
+        function sixRandom() {
+            var rand = "";
+            for (let i = 0; i < 6; i++) {
+                rand += Math.floor(Math.random() * 10);
+            }
+            return rand;
+        }
+
+        function getRandom() {
+            var rand = sixRandom();
+            while (rand[0] == 0) rand = sixRandom();
+            $("#rand").val(rand);
+        }
+
+        function searchActicle() {
+            var search_content = $("input[type='search']").val().toUpperCase();
+            $(":radio").parent().css("display", "inline");
+            if (search_content == "") return
+            var radio = $(":radio");
+            for (let i = 0; i < radio.length; i++) {
+                let a = $(radio[i]);
+                let A = a.val().toUpperCase();
+                for (let j = 0; j < search_content.length; j++) {
+                    if (A.indexOf(search_content[j]) == -1) {
+                        $(`:radio[value = '${a.val()}']`).parent().css("display", "none");
+                    }
+                }
+            }
+        }
+
+        function showInupt(check) {
+            var checked = $(check).prop("checked");
+            if (checked) {
+                $("input[type=number]").css("display", "inline");
+                $("#m").css("display", "inline");
+            } else {
+                $("input[type=number]").css("display", "none");
+                $("#m").css("display", "none");
+            }
+        }
+
+        function changePage(page) {
+            $(".page").css({
+                "border-bottom": "none",
+                "font-weight": "normal",
+                "color": "black"
+            });
+            $(page).css({
+                "border-bottom": "3px solid #66ccff",
+                "font-weight": "bold",
+                "color": "#66ccff"
+            });
+
+            (page.id == "manage") || (page.id == "view") ? $(".table").css('display', 'block') : $(".table").css('display', 'none');
+            page.id == "acticle" ? $("#upload").css('display', 'flex') : $("#upload").css('display', 'none');
+            page.id == "publish" ? $("#game").css('display', 'flex') : $("#game").css('display', 'none');
+            if (page.id == "view") {
+                $("#infoHead").html(`
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>文章</th>
+                    <th>字数</th>
+                    <th>时间</th>
+                    <th>日期</th>
+                    <th>速度</th>
+                    <th>正确率</th>
+                </tr>
+                `);
+                $("#create").val("导出数据");
+                $("#create").attr("onclick", "").click(function () { exportFile(); });
+                getData();
+            } else if (page.id == "manage") {
+                $("#infoHead").html(`
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>用户密码</th>
+                    <th>操作</th>
+                </tr>
+                `);
+                $("#create").val("创建用户");
+                $("#create").attr("onclick", "").click(function () { creatUser(); });
+                getUser();
+            }
+        }
+
+        function exit() {
+            document.cookie = "isLogin=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            document.cookie = "account=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location.replace("../login.html");
+        }
+    </script>
+</head>
+
+<body>
+    <div class="show">
+        <div class="box" id="personalCenter">
+            <div class="menu">
+                <div id="manage" class="page checked" onclick="changePage(this)">管理用户</div>
+                <div id="view" class="page" onclick="changePage(this)">查看数据</div>
+                <div id="acticle" class="page" onclick="changePage(this)">新增文章</div>
+                <div id="publish" class="page" onclick="changePage(this)">发布竞赛</div>
+                <div class="page" onclick="window.open('game/game.html')">查看竞赛</div>
+            </div>
+            <div class="table">
+                <table>
+                    <thead id="infoHead">
+                        <tr>
+                            <th>ID</th>
+                            <th>用户名</th>
+                            <th>用户密码</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="info"></tbody>
+                </table>
+            </div>
+            <input id="create" class="table" type="button" value="创建用户" onclick="creatUser()">
+            <div id="upload" style="display: none;">
+                <div class="up">
+                    <label>标题：</label>
+                    <input id="title" placeholder="请输入标题">
+                </div>
+                <div class="up">
+                    <label>内容：</label>
+                    <textarea id="content" placeholder="请输入内容"></textarea>
+                </div>
+                <input type="button" value="提交" onclick="upload()">
+            </div>
+            <div id="game" style="display: none;">
+                <form name="reg" action="game.php" method="get" target="frameName">
+                    <input class="game-inside" id="search" type="search" placeholder="搜索文章" oninput="searchActicle()">
+                    <div id="acticleList" class="game-inside"></div>
+                    <input name="code" class="game-inside" id="rand" readonly>
+                    <input class="game-inside" type="button" onclick="getRandom()" value="生成竞赛邀请码">
+                    <div class="game-inside">
+                        <label>结束时间：</label>
+                        <input name="time" type="datetime-local">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <input name="timeLimitMode" type="checkbox" onclick="showInupt(this)"><label>限时模式</label>
+                        <input name="timeLimit" type="number" style="width: 50px; display: none" min=1><label id="m"
+                            style="display: none;">分钟</label>
+                    </div>
+                    <input type="submit">
+                </form>
+                <iframe src="" frameborder="0" name="frameName"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="exit">
+        <input type="button" value="退出登录" onclick="exit()">
+    </div>
+</body>
+
+</html>

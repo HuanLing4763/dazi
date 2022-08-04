@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>竞赛记录</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #66ccff;
+        }
+
+        .show {
+            display: flex;
+            justify-content: center;
+        }
+
+        .box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            margin-top: 50px;
+            width: 1000px;
+            min-height: 600px;
+        }
+
+        table {
+            margin: 20px 100px;
+            width: 800px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        tr th,
+        td {
+            border: 1px solid black;
+        }
+    </style>
+    <script src="../../../jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script>
+        window.onload = function () {
+            getGame()
+        }
+
+        function getGame() {
+            $.ajax({
+                url: "getGame.php",
+                success(res) {
+                    $("#noEnd").html(res[0]);
+                    $("#ended").html(res[1]);
+                }
+            })
+        }
+
+        function deleteGame(g) {
+            var id = $(g).parent().parent().find("td").html()
+            if (confirm(`是否删除竞赛${id}`)) {
+                $.ajax({
+                    url: "deleteGame.php",
+                    type: "GET",
+                    data: {
+                        id: id
+                    },
+                    success(res) {
+                        alert("删除成功！");
+                        getGame();
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div class="show">
+        <div class="box">
+            <h2>进行中的竞赛</h2>
+            <table>
+                <thead>
+                    <th>ID</th>
+                    <th>文章</th>
+                    <th>结束时间</th>
+                    <th>限时</th>
+                    <th>操作</th>
+                </thead>
+                <tbody id="noEnd"></tbody>
+            </table>
+            <h2>已结束的竞赛</h2>
+            <table>
+                <thead>
+                    <th>ID</th>
+                    <th>文章</th>
+                    <th>结束时间</th>
+                    <th>限时</th>
+                    <th>操作</th>
+                </thead>
+                <tbody id="ended"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

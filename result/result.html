@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>成绩</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #66ccff;
+        }
+
+        .show {
+            display: flex;
+            justify-content: center;
+        }
+
+        .box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            margin-top: 50px;
+            width: 1000px;
+            height: 600px;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+    <script src="../jquery-3.6.0.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div class="show">
+        <div class="box">
+            <div class="info">
+                <p>文章：<span id="acticle">null</span></p>
+                <p>总字数：<span id="wordCount">0</span>字</p>
+                <p>时间：<span id="time">0</span></p>
+                <p>速度：<span id="speed">0</span>字/分</p>
+                <p>正确率：<span id="accuracy">100</span>%</p>
+                <input type="submit" onclick="mySubmit()">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const param = JSON.parse(localStorage.params);
+        document.getElementById("acticle").innerHTML = param.acticle;
+        document.getElementById("wordCount").innerHTML = param.wordCount;
+        document.getElementById("time").innerHTML = param.time;
+        document.getElementById("speed").innerHTML = param.speed;
+        document.getElementById("accuracy").innerHTML = param.accuracy;
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i].trim();
+                if (c.indexOf(name) == 0) return decodeURI(c.substring(name.length, c.length));
+            }
+            return "";
+        }
+
+        function mySubmit() {
+            var date = new Date(); 
+            date = date.toLocaleDateString();
+            $.ajax({
+                url: "submit.php",
+                type: "GET",
+                data: {
+                    acticle: param.acticle,
+                    wordCount: param.wordCount,
+                    time: param.time,
+                    speed: param.speed,
+                    accuracy: param.accuracy,
+                    contestId: param.id ? param.id : 0,
+                    date: date,
+                    name: decodeURI(getCookie("account"))
+                },
+                success(res) {
+                    location.href = "../index.html";
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

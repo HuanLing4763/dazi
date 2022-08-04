@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>竞赛模式</title>
+    <link rel="stylesheet" type="text/css" href="exercise.css">
+    <script src="../jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="exercise.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div class="box" id="txtHint"></div>
+        <div class="Sidebar" id="Sidebar"></div>
+    </div>
+    <script>
+        window.onload = function () {
+            var id = location.search.substr(1).split("=")[1];
+            $.ajax({
+                url: "getCompetiton.php",
+                type: "GET",
+                data: {
+                    id: id
+                },
+                success(res) {
+                    acticle = res["acticle"];
+                    limitTime = Number(res["time_limit"]);
+                    showTexts(acticle);
+                }
+            })
+        };
+
+        function showTexts(str) {
+            $.ajax({
+                url: `../acticle/${str}.txt`,
+                success: function (data) {
+                    current_line = 0;  // 重置输入行数
+                    all = data.replace(/[\r\n]/g, "").length;
+                    percentage = 1 / all * 100;
+                    data = data.split('\n');
+                    var strArr = [];
+                    var htmlcode = '';
+                    for (let i = 0; i < data.length; i++) {
+                        for (let j = 0; j < data[i].length; j += 40)
+                            strArr.push(data[i].slice(j, j + 40));
+                    }
+                    for (line = 0; line < strArr.length; line++) {
+                        var lineStr = strArr[line].replace(/[\r\n]/g, "");
+                        htmlcode += `<div class="text" id="refer${line}">`;
+                        for (let j = 0; j < lineStr.length; j++) {
+                            htmlcode += `<span id=row${line}&column${j} class="">${lineStr[j]}</span>`;
+                        }
+                        htmlcode += `</div><input class="inputText" id="${line}" readonly oninput="startTime()">`;
+                    }
+                    document.getElementById("txtHint").innerHTML = htmlcode;
+                    document.getElementById("Sidebar").innerHTML = Sidebar;
+                    document.getElementById("0").focus();
+                    $("#0").removeAttr("readonly");
+                    $("#mode").html("");
+                    addAttr(0);
+                }
+            });
+        }
+
+        function finish(wordCount) {
+            if ((limitTime && mins == limitTime) || wordCount == all) {
+                var countNo = $("#txtHint").html().split('class="no"').length - 1;
+                var accuracy = Math.trunc(100 - countNo * percentage);
+                var param = {
+                    acticle: acticle,
+                    wordCount: wordCount,
+                    time: $("#time").html(),
+                    speed: $("#speed").html(),
+                    accuracy: accuracy,
+                    id: location.search.substr(1).split("=")[1]
+                }
+                var params = JSON.stringify(param);
+                localStorage.setItem('params', params);
+                window.location.replace("../result/result.html");
+            }
+        }
+    </script>
+</body>
+
+</html>

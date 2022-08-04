@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>登录</title>
+    <meta charset="utf-8">
+    <style>
+        body {
+            background-color: #66ccff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            width: 400px;
+            height: 500px;
+            border-radius: 15px;
+        }
+
+        .inputBox {
+            margin-bottom: 20px;
+            border: none;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+            width: 300px;
+        }
+
+        .btn {
+            background-color: #66ccff;
+            border: none;
+            padding: 10px;
+            width: 320px;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+    <script type="text/javascript" src="../jquery-3.6.0.min.js"></script>
+    <script>
+        window.onload = function () {
+            var height = document.documentElement.clientHeight;
+            $("body").height(height);
+        }
+
+        function login() {
+            var account = $("#account input").val();
+            var password = $("#password input").val();
+            if (account == "" || password == "") {
+                alert("账号或密码不能为空！");
+                return
+            }
+            $.ajax({
+                url: "login.php",
+                type: "POST",
+                data: {
+                    account: account,
+                    password: password
+                },
+                success(res) {
+                    if (res == 1) {
+                        location.href = "user.html";
+                    } else if (res == 2) {
+                        alert("密码错误！");
+                    } else if (res == 3) {
+                        location.href = "manage/manage.html"
+                    } else {
+                        alert("用户不存在！");
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <div class="login">
+        <h1>登录</h1>
+        <div id="account">
+            <input class="inputBox" type="text" placeholder="请输入账号">
+        </div>
+        <div id="password">
+            <input class="inputBox" type="password" placeholder="请输入密码">
+        </div>
+        <div>
+            <input class="btn" type="submit" value="登录" onclick="login()">
+        </div>
+    </div>
+</body>
+
+</html>
