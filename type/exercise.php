@@ -1,7 +1,6 @@
 <?php
     header('Content-Type:application/json');
-    define('BASE_PATH',str_replace('\\','/',realpath(dirname(__FILE__).'/'))."/");  // 获取根目录
-    $dir = BASE_PATH . "acticle/";
+    $dir = "../acticle/";
     if (is_dir($dir)) {
         $arr = scandir($dir);
     }

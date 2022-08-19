@@ -38,7 +38,19 @@
     </style>
     <script src="../../../jquery-3.6.0.min.js" type="text/javascript"></script>
     <script>
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i].trim();
+                if (c.indexOf(name) == 0) return decodeURI(c.substring(name.length, c.length));
+            }
+            return "";
+        }
+        
         window.onload = function () {
+            let user = decodeURI(getCookie("account"));
+            if (user != "root") location.replace("../../../404.html");
             getGame()
         }
 
