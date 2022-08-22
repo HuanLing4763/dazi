@@ -4,7 +4,7 @@ const Sidebar = `<p style="margin: 7px 5px;">总字数：<span id="totalWordCoun
                 <p style="margin: 7px 5px;">正确率：<span id="accuracy">100</span>%</p>
                 <p style="margin: 7px 5px;">进　度：<span id="progress">0</span>%</p>
                 <div style="text-align: center;">
-                    <input id="start" type="image" onclick="startTime()" src="icon/start.svg">
+                    <input id="btn" type="image" onclick="startTime()" src="icon/start.svg">
                     <input id="reset" type="image" onclick="reset()" src="icon/reset.svg">
                 </div>
                 <div id="mode">
@@ -103,9 +103,7 @@ function startTime() {
                 timeoutId = setInterval(countTime, 1000);  //指定时间执行任务
             }
             // 修改按钮
-            $("#start").attr("onclick", "").click(function () { pauseTime(); });
-            $("#start").attr("src", "icon/pause.svg");
-            $("#start").attr("id", "pause");
+            document.getElementById("btn").outerHTML = '<input id="btn" type="image" onclick="pauseTime()" src="icon/pause.svg">';
             $("#mode").html("");
 
             //统计字数及进度
@@ -134,7 +132,7 @@ function startTime() {
 
             // 自动换行输入
             if (current_line_content.length <= input_content.length) {
-                var temp = input_content.substring(current_line_content.length + 1);
+                var temp = input_content.substring(current_line_content.length);
                 $(`#${current_line}`).attr("readonly", "readonly");
                 current_line++;
 
@@ -147,7 +145,7 @@ function startTime() {
 
                 // 将溢出内容移动至下面的输入框
                 next.value = temp;
-                last.value = last.value.substring(0, current_line_content.length + 1);
+                last.value = last.value.substring(0, current_line_content.length);
                 if (next.value.length >= next_refer.innerText.length) {
                     startTime();
                 }
@@ -164,9 +162,7 @@ function pauseTime() {
     if (isCounting) {
         isCounting = false;
         clearTimeout(timeoutId); //清除指定id计时器
-        $("#pause").attr("onclick", "").click(function () { startTime(); });
-        $("#pause").attr("src", "icon/start.svg");
-        $("#pause").attr("id", "start");
+        document.getElementById("btn").outerHTML = '<input id="btn" type="image" onclick="startTime()" src="icon/start.svg">';
     }
 }
 
