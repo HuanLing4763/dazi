@@ -5,11 +5,13 @@
     <title>登录</title>
     <meta charset="utf-8">
     <style>
-        body {
+        html, body {
             background-color: #66ccff;
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 100%;
+            height: 100%;
         }
 
         .login {
@@ -45,19 +47,47 @@
         }
     </style>
     <script type="text/javascript" src="../jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="../sha1.min.js"></script>
     <script>
-        window.onload = function () {
-            var height = document.documentElement.clientHeight;
-            $("body").height(height);
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i].trim();
+                if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+            }
+            return "";
         }
 
-        function login() {
-            var account = $("#account input").val();
-            var password = $("#password input").val();
+        function loginError(count) {
+            if (count) {
+                count++;
+                document.cookie = "login=" + count;
+            } else {
+                document.cookie = "login=1";
+            }
+        }
+
+        function verify() {
+            let account = $("#account input").val();
+            let password = $("#password input").val();
+            password = sha1(password);
             if (account == "" || password == "") {
                 alert("账号或密码不能为空！");
-                return
+            } else {
+                // 输入错误3次及以上，弹出滑动验证码
+                let count = Number(getCookie("login"));
+                if (count > 3) {
+                    document.getElementById("ifrmid").contentWindow.location.reload();
+                    $("#verify").css("display", "block");
+                    $("#login-content").css("display", "none");
+                    return
+                }
+                login(account, password, count);
             }
+        }
+
+        function login(account, password, count) {
             $.ajax({
                 url: "login.php",
                 type: "POST",
@@ -70,28 +100,45 @@
                         location.href = "user.html";
                     } else if (res == 2) {
                         alert("密码错误！");
+                        $("#password input").val("");
+                        loginError(count);
                     } else if (res == 3) {
                         location.href = "manage/manage.html"
                     } else {
                         alert("用户不存在！");
+                        $("#account input").val("");
+                        $("#password input").val("");
+                        loginError(count);
                     }
                 }
             })
         }
+
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                document.getElementById("login").click();
+            }
+        })
     </script>
 </head>
 
 <body>
     <div class="login">
-        <h1>登录</h1>
-        <div id="account">
-            <input class="inputBox" type="text" placeholder="请输入账号">
+        <div id="verify" style="display: none;">
+            <iframe id="ifrmid" src="../SliderCaptcha/src/index.html" width="400px" height="500px" loading="lazy"></iframe>
         </div>
-        <div id="password">
-            <input class="inputBox" type="password" placeholder="请输入密码">
-        </div>
-        <div>
-            <input class="btn" type="submit" value="登录" onclick="login()">
+        <div id="login-content" class="login">
+            <h1>登录</h1>
+            <div id="account">
+                <input class="inputBox" type="text" placeholder="请输入账号">
+            </div>
+            <div id="password">
+                <input class="inputBox" type="password" placeholder="请输入密码">
+            </div>
+            <div>
+                <input id="login" class="btn" type="submit" value="登录" onclick="verify()">
+                <div id="e" style="font-size: small;color: red;width: 320px;margin-top: 5px;"></div>
+            </div>
         </div>
     </div>
 </body>

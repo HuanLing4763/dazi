@@ -4,6 +4,7 @@
         $arr = scandir($dir);
     }
     $arrlength = count($arr);
+    $res = '';
 
     for ($x = 0; $x < $arrlength; $x++) {
         if (preg_match("/.+\.txt/", $arr[$x])) {

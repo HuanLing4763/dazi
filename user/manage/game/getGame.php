@@ -1,14 +1,17 @@
-
 <?php
     header('Content-Type:application/json');
 
-    $servername = "localhost:3306";
-    $username = "root";
-    $password = "123456";
-    $dbname = "user";
+    // 获取数据库配置
+    $db_config_string = file_get_contents('../../../db_config.json');
+    $db_config = json_decode($db_config_string, true);
 
     // 创建连接
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli(
+        $db_config["servername"],
+        $db_config["username"],
+        $db_config["password"],
+        $db_config["dbname"]
+    );
     
     // 检测连接
     if ($conn->connect_error) {
@@ -23,7 +26,7 @@
     $ended = "";
 
     while($row = mysqli_fetch_assoc($result)) {
-        $timeLimit = $row["time_limit"] == null ? "无" : ($row["time_limit"] . "分钟");
+        $timeLimit = $row["time_limit"] == 0 ? "无" : ($row["time_limit"] . "分钟");
         if (strtotime($now) < strtotime($row["end_time"])) {
             $noEnd .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a><a href="#" onclick="deleteGame(this)">删除</a></td></tr>';
         } else {

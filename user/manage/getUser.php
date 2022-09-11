@@ -1,11 +1,16 @@
 <?php
-    $servername = "localhost:3306";
-    $username = "root";
-    $password = "123456";
-    $dbname = "user";
+
+    // 获取数据库配置
+    $db_config_string = file_get_contents('../../db_config.json');
+    $db_config = json_decode($db_config_string, true);
 
     // 创建连接
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli(
+        $db_config["servername"],
+        $db_config["username"],
+        $db_config["password"],
+        $db_config["dbname"]
+    );
  
     // 检测连接
     if ($conn->connect_error) {
@@ -13,12 +18,11 @@
     }
 
     $res = "";
-    $i = 1;
 
-    $result = mysqli_query($conn, "SELECT user_name FROM users");
+    $result = mysqli_query($conn, "SELECT * FROM users");
     while($row = mysqli_fetch_assoc($result)) {
         $res .= "<tr>";
-        $res .= "<td>" . $i++ . "</td><td>" . $row["user_name"] . "</td><td>******</td>";
+        $res .= "<td>" . $row["user_id"] . "</td><td>" . $row["user_name"];
         $res .= "<td onclick='deleteUser(this)'>删除用户</td></tr>";
     }
 

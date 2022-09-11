@@ -54,16 +54,6 @@
         document.getElementById("speed").innerHTML = param.speed;
         document.getElementById("accuracy").innerHTML = param.accuracy;
 
-        function getCookie(cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i].trim();
-                if (c.indexOf(name) == 0) return decodeURI(c.substring(name.length, c.length));
-            }
-            return "";
-        }
-
         function mySubmit() {
             var date = new Date(); 
             date = date.toLocaleDateString();
@@ -77,8 +67,7 @@
                     speed: param.speed,
                     accuracy: param.accuracy,
                     contestId: param.id ? param.id : 0,
-                    date: date,
-                    name: decodeURI(getCookie("account"))
+                    date: date
                 },
                 success(res) {
                     location.href = "../index.html";

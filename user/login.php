@@ -2,42 +2,48 @@
     $account = $_POST["account"];
     $pwd = $_POST["password"];
 
-    $servername = "localhost:3306";
-    $username = "root";
-    $password = "123456";
-    $dbname = "user";
+    // 获取数据库配置
+    $db_config_string = file_get_contents('../db_config.json');
+    $db_config = json_decode($db_config_string, true);
 
     // 创建连接
-    $conn = new mysqli($servername, $username, $password, $dbname);
+    $conn = new mysqli(
+        $db_config["servername"],
+        $db_config["username"],
+        $db_config["password"],
+        $db_config["dbname"]
+    );
  
     // 检测连接
     if ($conn->connect_error) {
         die("连接失败: " . $conn->connect_error);
     }
 
-    $sql = "SELECT * FROM users
-            WHERE user_name = '{$account}'";
-    
-    $result = mysqli_query($conn, $sql);
+    $stmt = $conn->prepare("SELECT user_password FROM users WHERE user_name = ?");
+    $stmt->bind_param("s", $account);
+    $stmt->execute();
+    $stmt->bind_result($query_pwd);
 
-    if (mysqli_num_rows($result) == 0) {
+    if ($stmt->fetch() == 0) {
         echo 0;
     } else{
-        while($row = mysqli_fetch_assoc($result)) {
-            if ($row["user_password"] == $pwd) {
-                // 设置coockie
-                setcookie("account", urlencode($account), time()+3600*24*365, "/");
-                setcookie("isLogin", true, time()+3600*24*365, "/");
-                if ($account == "root") {
-                    echo 3;
-                } else {
-                    echo 1;
-                }
+        if ($query_pwd == $pwd) {
+            // 设置session
+            ini_set("session.gc_maxlifetime", "31536000");  // 将session过期时间设置为1年
+            ini_set("session.cookie_lifetime", "31536000");  // 将session对应的cookie过期时间设置为1年
+            session_start();
+            $_SESSION['user'] = $account;
+
+            if ($account == "root") {
+                echo 3;
             } else {
-                echo 2;
+                echo 1;
             }
+        } else {
+            echo 2;
         }
     }
 
+    $stmt->close();
     $conn->close();
 ?>
