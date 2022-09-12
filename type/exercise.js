@@ -39,6 +39,7 @@ window.onload = function () {
                     data: msg,
                     click: function (data, othis) {
                         showTexts(data.title);
+                        $("#select").html(data.title);
                     }
                 })
             })
