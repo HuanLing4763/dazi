@@ -287,7 +287,7 @@
                 for (let i = 0; i < arr.length; i++) {
                     let new_d_value = arr[i] - num; // 新差值
                     if (new_d_value <= d_value || d_value < 0) { // 如果新差值小于等于旧差值，保存新差值和索引，如果旧差值小于0，也保存新差值的索引
-                        if (new_d_value === d_value && arr[i] < arr[index]) { // 如果数组中两个数值跟目标数值差值一样，取大
+                        if (new_d_value === d_value) { // 如果数组中两个数值跟目标数值差值一样，取小
                             continue;
                         }
                         index = i;
@@ -335,12 +335,18 @@
             var newStartTimestamp = newStartDate.getTime();
             var newEndTimestamp = newEndDate.getTime();
 
-            var newStartIndex = findCloseNum(timestampArray, newStartTimestamp, 0);
-            var newEndIndex = findCloseNum(timestampArray, newEndTimestamp, 1);
+            if (timestampArray[0] > newEndTimestamp || timestampArray[timestampArray.length - 1] < newStartTimestamp) {
+                chandeParam.date = null;
+                chandeParam.speed = null;
+                chandeParam.accuracy = null;
+            } else {
+                let newStartIndex = findCloseNum(timestampArray, newStartTimestamp, 0);
+                let newEndIndex = findCloseNum(timestampArray, newEndTimestamp, 1);
 
-            chandeParam.date = temp.date.slice(newStartIndex, newEndIndex + 1);
-            chandeParam.speed = temp.speed.slice(newStartIndex, newEndIndex + 1);
-            chandeParam.accuracy = temp.accuracy.slice(newStartIndex, newEndIndex + 1);
+                chandeParam.date = temp.date.slice(newStartIndex, newEndIndex + 1);
+                chandeParam.speed = temp.speed.slice(newStartIndex, newEndIndex + 1);
+                chandeParam.accuracy = temp.accuracy.slice(newStartIndex, newEndIndex + 1);
+            }
 
             // 重新渲染图表
             getCharts();

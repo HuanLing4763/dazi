@@ -90,7 +90,7 @@ function showTexts(str) {
             addAttr(0);
 
             // 设置cookie，记录上次选择的文章，保存180天
-            document.cookie = "acticle=" + acticle + ";max-age=" + 180*24*60*60
+            document.cookie = "acticle=" + acticle + ";max-age=" + 180 * 24 * 60 * 60
         }
     });
 }
@@ -144,7 +144,9 @@ function startTime() {
                 }
             }
 
-            finish(totalWordCount);
+            // 判断是否完成
+            if (totalWordCount == all)
+                finish(totalWordCount);
 
             // 自动换行输入
             if (current_line_content.length <= input_content.length) {
@@ -198,7 +200,8 @@ function countTime() {
     $("#time").html(`${temp_mins}:${temp_secs}`);
     $("#speed").html(speed);
 
-    finish(totalWordCount);
+    if (limitTime && mins == limitTime)
+        finish(totalWordCount);
 }
 
 function checkTime(time) {
@@ -255,18 +258,16 @@ function timeMode() {
 }
 
 function finish(wordCount) {
-    if ((limitTime && mins == limitTime) || wordCount == all) {
-        var countNo = $("#txtHint").html().split('class="no"').length - 1;
-        var accuracy = Math.trunc(100 - countNo * percentage);
-        var param = {
-            acticle: acticle,
-            wordCount: wordCount,
-            time: $("#time").html(),
-            speed: $("#speed").html(),
-            accuracy: accuracy
-        }
-        var params = JSON.stringify(param);
-        localStorage.setItem('params', params);
-        window.location.replace("../result/result.html");
+    var countNo = $("#txtHint").html().split('class="no"').length - 1;
+    var accuracy = Math.trunc(100 - countNo * percentage);
+    var param = {
+        acticle: acticle,
+        wordCount: wordCount,
+        time: $("#time").html(),
+        speed: $("#speed").html(),
+        accuracy: accuracy
     }
+    var params = JSON.stringify(param);
+    localStorage.setItem('params', params);
+    window.location.replace("../result/result.html");
 }
