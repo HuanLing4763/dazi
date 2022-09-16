@@ -24,10 +24,12 @@ var percentage = 0;  // 一个字所占百分比
 var isCounting = false;  // 判断计时状态
 var inputLock = false;  // 判断中文输入法是否在拼写状态
 
-var acticle = "test";
+var acticle = "";
 
 window.onload = function () {
-    showTexts("test");
+    acticle = getCookie("acticle");
+    acticle = acticle == "" ? "冰灯" : acticle;
+    showTexts(acticle);
     $.ajax({
         type: "GET",
         url: "exercise.php",
@@ -45,6 +47,16 @@ window.onload = function () {
             })
         }
     })
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
 }
 
 function showTexts(str) {
@@ -76,6 +88,9 @@ function showTexts(str) {
             document.getElementById("0").focus();
             $("#0").removeAttr("readonly");
             addAttr(0);
+
+            // 设置cookie，记录上次选择的文章，保存180天
+            document.cookie = "acticle=" + acticle + ";max-age=" + 180*24*60*60
         }
     });
 }

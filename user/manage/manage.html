@@ -99,7 +99,8 @@
             margin-bottom: 20px;
         }
 
-        #create, #export {
+        #create,
+        #export {
             margin-left: 45%;
             width: 100px;
             height: 50px;
@@ -134,12 +135,7 @@
                 }
             })
             getUser();
-            $.ajax({
-                url: "getFile.php",
-                success(res) {
-                    $("#acticleList").html(res);
-                }
-            })
+            getActicle();
         }
 
         function getUser() {
@@ -165,13 +161,14 @@
             var content = $("#content").val();
             $.ajax({
                 url: "upload.php",
-                type: "GET",
+                type: "POST",
                 data: {
                     title: title,
                     content: content
                 },
                 success(res) {
                     alert("提交成功！");
+                    getActicle();
                 }
             })
         }
@@ -307,6 +304,15 @@
             }
         }
 
+        function getActicle() {
+            $.ajax({
+                url: "getFile.php",
+                success(res) {
+                    $("#acticleList").html(res);
+                }
+            })
+        }
+
         function exit() {
             $.ajax({
                 url: '../deleteSession.php',
@@ -341,7 +347,8 @@
                 </table>
             </div>
             <input id="create" class="table" type="button" value="创建用户" onclick="creatUser()">
-            <input id="export" class="table" type="button" value="导出数据" onclick="alert('请选中需要的数据复制到Excel工作表中')" style="display: none;">
+            <input id="export" class="table" type="button" value="导出数据" onclick="alert('请选中需要的数据复制到Excel工作表中')"
+                style="display: none;">
             <div id="upload" style="display: none;">
                 <div class="up">
                     <label>标题：</label>
