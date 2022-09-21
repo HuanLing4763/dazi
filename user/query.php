@@ -25,12 +25,12 @@
     $stmt->bind_result($id, $acticle, $end_time, $time_limit);
     
     if ($stmt->fetch() == 0) {
-        echo 0;
+        echo "<script>alert('邀请码不正确！');history.go(-1);</script>";
     } else{
         if (strtotime($now) > strtotime($end_time)) {
-            echo 1;
+            echo "<script>alert('竞赛已结束！');history.go(-1);</script>";
         } else {
-            echo $id;
+            echo "<script>location.href = '../type/competition.html?id=" . $id . "'</script>";
         }
     }
 

@@ -32,19 +32,28 @@ window.onload = function () {
     showTexts(acticle);
     $.ajax({
         type: "GET",
-        url: "exercise.php",
-        success: function (msg) {
-            layui.use('dropdown', function () {
-                var dropdown = layui.dropdown
-                dropdown.render({
-                    elem: "#demo1",
-                    data: msg,
-                    click: function (data, othis) {
-                        showTexts(data.title);
-                        $("#select").html(data.title);
-                    }
+        url: "getFile.php",
+        success: function (res) {
+            let index = 0;
+            let select = document.getElementById("acticle");
+            for (let i = 0; i < res.length; i++) {
+                let option = document.createElement("option");
+                option.setAttribute("value", res[i].id);
+                option.innerText = res[i].title;
+                select.appendChild(option);
+
+                if (res[i].title == acticle) index = res[i].id;
+            }
+            layui.use('form', function () {
+                let form = layui.form;
+                form.render('select');
+
+                form.on('select', function (data) {
+                    acticle = data.elem.selectedOptions[0].text;
+                    showTexts(acticle);
                 })
             })
+            $("#acticle").val(index);
         }
     })
 }

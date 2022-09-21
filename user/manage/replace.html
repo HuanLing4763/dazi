@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>文章处理</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../layui/css/layui.css" media="all">
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            background: #eee;
+        }
+
+        .box {
+            margin-top: 5px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main {
+            height: 50%;
+        }
+
+        .input {
+            height: 100%;
+            width: 100%;
+        }
+
+        .middle {
+            text-align: center;
+        }
+    </style>
+    <script type="text/javascript" src="../../layui/layui.js"></script>
+</head>
+
+<body>
+    <div class="box">
+        <form class="layui-form" action="" style="width: 50%;">
+            <div class="main">
+                <div class="layui-form-item layui-form-text input">
+                    <textarea name="content" placeholder="请输入原始文本" class="layui-textarea input"></textarea>
+                </div>
+            </div>
+            <div class="middle">
+                <div class="layui-form-item">
+                    <input type="checkbox" name="remove[space]" title="去空格空行" checked>
+                    <input type="checkbox" name="remove[e_to_z]" title="英文字符转换为中文字符" checked>
+                    <input type="checkbox" name="remove[commas]" title="去英文引号" checked>
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit>处理</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+            <div class="main">
+                <div class="layui-form-item layui-form-text input">
+                    <textarea id="res" class="layui-textarea input"></textarea>
+                </div>
+            </div>
+            <div class="middle">
+                <button style="margin-top: 15px;" class="layui-btn" onclick="copy()">复制</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+
+            form.on('submit', function (data) {
+                let str = data.field['content'];
+                let space = data.field['remove[space]'];
+                let e = data.field['remove[e_to_z]'];
+                let commas = data.field['remove[commas]'];
+                if (space == 'on')
+                    str = removeSpace(str);
+                if (e == 'on')
+                    str = e_to_z(str);
+                if (commas == 'on')
+                    str = removeCommas(str);
+                document.getElementById("res").innerHTML = str;
+                return false;
+            });
+        });
+
+        function removeSpace(string) {
+            string = string.replace(/\s/g, "\n");
+            string = string.replace(/(\n)*(\n)/g, "\n");
+            return string;
+        }
+
+        function e_to_z(string) {
+            string = string.replace(/,/g, "，")
+                .replace(/\./g, "。")
+                .replace(/!/g, "！")
+                .replace(/\?/g, "？")
+                .replace(/\[/g, "【")
+                .replace(/\]/g, "】")
+                .replace(/\(/g, "（")
+                .replace(/\)/g, "）")
+                .replace(/</g, "《")
+                .replace(/>/g, "》")
+                .replace(/:/g, "：")
+                .replace(/;/g, "；");
+            return string;
+        }
+
+        function removeCommas(string) {
+            return string.replace(/[\"\']/g, "");
+        }
+
+        function copy() {
+            setTimeout(function () {
+                let res = document.getElementById("res");
+                res.select();
+                document.execCommand("Copy");
+                res.innerHTML = "复制成功！";
+            }, 100)
+        }
+    </script>
+</body>
+
+</html>

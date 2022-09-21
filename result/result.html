@@ -70,6 +70,7 @@
                     date: date
                 },
                 success(res) {
+                    if (res == 1) location.replace("../type/exercise.html");
                     location.replace("../index.php");
                 }
             })

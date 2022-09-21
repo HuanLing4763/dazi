@@ -2,7 +2,7 @@
     $id = $_GET["id"];
 
     // 获取数据库配置
-    $db_config_string = file_get_contents('../../../db_config.json');
+    $db_config_string = file_get_contents('../db_config.json');
     $db_config = json_decode($db_config_string, true);
 
     // 创建连接

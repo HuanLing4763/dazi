@@ -2,7 +2,7 @@
     header('Content-Type:application/json');
 
     // 获取数据库配置
-    $db_config_string = file_get_contents('../../../db_config.json');
+    $db_config_string = file_get_contents('../db_config.json');
     $db_config = json_decode($db_config_string, true);
 
     // 创建连接
@@ -28,9 +28,9 @@
     while($row = mysqli_fetch_assoc($result)) {
         $timeLimit = $row["time_limit"] == 0 ? "无" : ($row["time_limit"] . "分钟");
         if (strtotime($now) < strtotime($row["end_time"])) {
-            $noEnd .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a><a href="#" onclick="deleteGame(this)">删除</a></td></tr>';
+            $noEnd .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a></td></tr>';
         } else {
-            $ended .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a><a href="#" onclick="deleteGame(this)">删除</a></td></tr>';
+            $ended .= '<tr><td>' . $row["id"] . '</td><td>' . $row["acticle"] . '</td><td>' . $row["end_time"] .'</td><td>' . $timeLimit . '</td><td><a style="padding: 3px;" href="view.html?id=' . $row["id"] . '">查看</a></td></tr>';
         }
     }
 

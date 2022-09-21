@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>竞赛记录</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+    <style>
+        body {
+            background-color: #66ccff;
+        }
+
+        .show {
+            display: flex;
+            justify-content: center;
+        }
+
+        .box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            margin-top: 50px;
+            width: 1000px;
+            min-height: 600px;
+        }
+
+        table {
+            margin: 20px auto !important;
+            width: 90% !important;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: center !important;
+        }
+    </style>
+    <script src="../jquery-3.6.0.min.js" type="text/javascript"></script>
+    <script>
+        $.ajax({
+            url: "getGame.php",
+            success(res) {
+                $("#noEnd").html(res[0]);
+                $("#ended").html(res[1]);
+            }
+        })
+    </script>
+</head>
+
+<body>
+    <div class="show">
+        <div class="box">
+            <h1 style="margin-top: 20px;">进行中的竞赛</h1>
+            <table class="layui-table">
+                <thead>
+                    <th>ID</th>
+                    <th>文章</th>
+                    <th>结束时间</th>
+                    <th>限时</th>
+                    <th>操作</th>
+                </thead>
+                <tbody id="noEnd"></tbody>
+            </table>
+            <h1>已结束的竞赛</h1>
+            <table class="layui-table">
+                <thead>
+                    <th>ID</th>
+                    <th>文章</th>
+                    <th>结束时间</th>
+                    <th>限时</th>
+                    <th>操作</th>
+                </thead>
+                <tbody id="ended"></tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

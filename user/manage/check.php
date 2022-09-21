@@ -1,5 +1,6 @@
 <?php
     session_start();
-    $res = $_SESSION['user'] == 'root' ? 1 : 0;
-    echo $res;
+    $user = $_SESSION['user'];
+    if ($user == 'root') echo 1;
+    else echo $user;
 ?>

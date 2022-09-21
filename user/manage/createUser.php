@@ -12,7 +12,7 @@
         $db_config["password"],
         $db_config["dbname"]
     );
- 
+
     // 检测连接
     if ($conn->connect_error) {
         die("连接失败: " . $conn->connect_error);
@@ -24,15 +24,14 @@
     $stmt->execute();
     if ($stmt->fetch() > 0) {
         echo 1;
-        exit(0);
+    } else {
+        // 创建用户
+        $stmt = $conn->prepare("INSERT INTO users VALUES(0, ?, '123456')");
+        $stmt->bind_param('s', $account);
+        $stmt->execute();
+
+        mysqli_query($conn, $sql);
     }
-
-    // 创建用户
-    $stmt = $conn->prepare("INSERT INTO users VALUES(?, '123456')");
-    $stmt->bind_param('s', $account);
-    $stmt->execute();
-
-    mysqli_query($conn, $sql);
 
     $stmt->close();
     $conn->close();

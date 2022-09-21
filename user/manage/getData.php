@@ -1,5 +1,5 @@
 <?php
-
+    header('Content-Type:application/json');
     // 获取数据库配置
     $db_config_string = file_get_contents('../../db_config.json');
     $db_config = json_decode($db_config_string, true);
@@ -17,18 +17,13 @@
         die("连接失败: " . $conn->connect_error);
     }
 
-    $res = "";
+    $result = $conn->query("SELECT * FROM `grades` ORDER BY `date` DESC");
+    $data = $result->fetch_all();
 
-    $result = mysqli_query($conn, "SELECT * FROM grades");
-    while($row = mysqli_fetch_assoc($result)) {
-        $res .= "<tr>";
-        $res .= "<td>" . $row["id"] . "</td><td>" . $row["name"] . "</td><td>" . $row["acticle"] .
-                "</td><td>". $row["word_count"] . "</td><td>". $row["time"] . "</td><td>". $row["date"] .
-                "</td><td>". $row["speed"] . "</td><td>". $row["accuracy"] . "</td>";
-        $res .= "</tr>";
-    }
+    $result = $conn->query("SELECT `user_id`, `user_name` FROM users ORDER BY `user_id`");
+    $user = $result->fetch_all();
 
-    echo $res;
+    echo json_encode([$user, $data], JSON_UNESCAPED_UNICODE);
 
     $conn->close();
 ?>

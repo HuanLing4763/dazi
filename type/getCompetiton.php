@@ -19,7 +19,7 @@
         die("连接失败: " . $conn->connect_error);
     }
 
-    $stmt = $conn->prepare("SELECT * FROM contest WHERE id = ?");
+    $stmt = $conn->prepare("SELECT `acticle`, `time_limit` FROM contest WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $stmt->bind_result($id, $acticle, $end_time, $time_limit);

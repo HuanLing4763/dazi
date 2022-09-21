@@ -9,6 +9,12 @@
     $contestId = $_GET["contestId"];
     $date = $_GET["date"];
 
+    // 检测是否为访客
+    if (!$name) {
+        echo 1;
+        exit(0);
+    }
+
     // 获取数据库配置
     $db_config_string = file_get_contents('../db_config.json');
     $db_config = json_decode($db_config_string, true);
