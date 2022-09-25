@@ -26,7 +26,7 @@
         echo 1;
     } else {
         // 创建用户
-        $stmt = $conn->prepare("INSERT INTO users VALUES(0, ?, '123456')");
+        $stmt = $conn->prepare("INSERT INTO users VALUES(0, ?, '7c4a8d09ca3762af61e59520943dc26494f8941b')");
         $stmt->bind_param('s', $account);
         $stmt->execute();
 
