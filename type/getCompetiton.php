@@ -22,7 +22,7 @@
     $stmt = $conn->prepare("SELECT `acticle`, `time_limit` FROM contest WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    $stmt->bind_result($id, $acticle, $end_time, $time_limit);
+    $stmt->bind_result($acticle, $time_limit);
     $stmt->fetch();
 
     $result = array("id"=>$id, "acticle"=>$acticle, "end_time"=>$end_time, "time_limit"=>$time_limit);

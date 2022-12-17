@@ -87,7 +87,7 @@
                     let select = document.getElementById("acticle");
                     for (let i = 0; i < res.length; i++) {
                         let option = document.createElement("option");
-                        option.setAttribute("value", res[i].id);
+                        option.setAttribute("value", res[i].title);
                         option.innerText = res[i].title;
                         select.appendChild(option);
                     }
@@ -317,12 +317,12 @@
         })
 
         layui.use('laydate', function () {
-            var laydate = layui.laydate;
+            let laydate = layui.laydate;
 
             laydate.render({
                 elem: '#date'
                 , type: 'datetime'
-                , min: 0
+                , min: Date.now() + 60000
             });
         });
     </script>

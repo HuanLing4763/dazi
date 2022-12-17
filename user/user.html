@@ -37,13 +37,6 @@
     <script src="../sha1.min.js" type="text/javascript"></script>
     <script>
         window.onload = function () {
-            let date = new Date();
-            let startDate = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
-            let endDate = new Date(date.getTime());
-
-            $("#startDate").val(startDate.format("yyyy-MM-dd"));
-            $("#endDate").val(endDate.format("yyyy-MM-dd"));
-
             $.ajax({
                 url: "manage/check.php",
                 type: "GET",
@@ -356,16 +349,24 @@
         }
 
         layui.use('laydate', function () {
-            var laydate = layui.laydate;
+            let laydate = layui.laydate;
+
+            let date = new Date();
+            let startDate = new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000);
+            let endDate = new Date(date.getTime());
+            startDate = startDate.format("yyyy-MM-dd");
+            endDate = endDate.format("yyyy-MM-dd");
 
             laydate.render({
                 elem: "#range",
                 type: "date",
+                value: `${startDate} - ${endDate}`,
                 range: ["#startDate", "#endDate"],
                 change: function (value, date, endDate) {
-                    var newDate = value.split(" - ");
-                    var start = new Date(newDate[0]);
-                    var end = new Date(newDate[1]);
+                    console.log(value);
+                    let newDate = value.split(" - ");
+                    let start = new Date(newDate[0]);
+                    let end = new Date(newDate[1]);
                     changeDate(start, end);
                 }
             })
